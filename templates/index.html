@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <title>RequestTools</title>
+
+    <!-- 引入bootstrap -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <script type="text/javascript" src="{{  url_for('static', filename='js/jquery.min.js') }}"></script>
+    <script type="text/javascript" src="{{  url_for('static', filename='js/bootstrap.min.js') }}"></script>
+
+    <script>
+        function isHidden(divname) {
+            var vDiv = document.getElementById(divname);
+            vDiv.style.display = (vDiv.style.display == "none") ? "block": "none";
+        }
+    </script>
+
+</head>
+
+<body>
+
+    <div style="margin-left: 10%">
+
+            <h1>RequestTool</h1>
+
+            <br />
+
+            <div>
+
+                <!-- 表单提交区域 -->
+
+                <form method="post">
+
+                    <div class="input-prepend" style="width: 50%; ">
+                        <span class="add-on">请求地址</span>
+                        <input style="width: 82%" class="span2"
+                               name="req_url" type="text" value="{{ req_url }}" placeholder="http://httpbin.org/post"
+                               onClick="if (this.value==''){this.value='http://httpbin.org/post'}">
+                    </div>
+
+                    <div class="input-prepend" style="width: 40%; ">
+                        <span class="add-on">变换参数</span>
+                        <input style="width: 30%" class="span2"
+                               name="param" type="text" placeholder="[待完善]请输入指定参数...">
+                    </div>
+
+                    <!-- 请求头 -->
+
+                    <div class="input-prepend" style="width: 50%">
+                        <span class="add-on">Headers</span>
+                        <textarea name="req_headers" rows="5" style="width: 82%;">{{ "User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:12.0) Gecko/20100101 Firefox/21.0" }}</textarea>
+                    </div>
+
+                    <div class="input-prepend" style="width: 40%">
+                        <span class="add-on">Form</span>
+                        <textarea name="req_form" rows="5" style="width: 82%; ">{{ "username: root\r\npassword: 12345" }}</textarea>
+                    </div>
+
+                    <!-- 请求方式 -->
+                    <div>
+                        <input name="req_method" type="submit" class="btn btn-info" value="GET">
+                        <input name="req_method" type="submit" class="btn btn-success" value="POST" />
+
+
+                    <!-- 闪现消息 -->
+                    <!--<p>-->
+                        <button class="btn btn-warning" type="button">WARNING</button>
+                            {% for message in get_flashed_messages() %}
+                        <botton style="color: orangered">{{ message }}</botton>
+                            {% endfor %}
+                    <!--</p>-->
+                    </div>
+
+                </form>
+
+            </div>
+
+            <!-- 左边栏目 -->
+            <div style="width: 50%; float: left; ">
+
+                <table class="table table-striped" style="table-layout: fixed;">
+                    <thead>
+                        <tr>
+                            <th width="5%">#</th>
+                            <th>Name</th>
+                            <th width="10%">Status</th>
+                            <th width="10%">Method</th>
+                        </tr>
+                    </thead>
+
+                    <tbody onclick="isHidden('detail')">
+                        <tr>
+                            <td>1</td>
+                            <td style="white-space:nowrap;overflow:hidden;text-overflow: ellipsis;">{{ req_url }}</td>
+                            <td>{{ status_code }}</td>
+                            <td>{{ req_method }}</td>
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <!-- 右边栏目 -->
+            <div id="detail" style="display: none; width: 49%; float: right" >
+
+                <!-- 选项卡菜单-->
+                <ul id="myTab" class="nav nav-tabs" role="tablist">
+                    <li class="active"><a href="#bulletin" role="tab" data-toggle="tab">Request</a></li>
+                    <li><a href="#rule" role="tab" data-toggle="tab">Response</a></li>
+                    <li><a href="#forum" role="tab" data-toggle="tab">Content</a></li>
+                </ul>
+
+                <!-- 选项卡面板 -->
+                <div id="myTabContent" class="tab-content">
+
+                    <!-- 请求头展示 -->
+                    <div class="tab-pane active" id="bulletin">
+
+                        <table class="table table-condensed">
+                        <tbody>
+                            {% for k, v in req_headers %}
+                                <tr class="" style="">
+                                    <td style="font-weight: bold">{{ k }}</td>
+                                    <td>{{ v }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+
+                    </div>
+
+                    <!-- 响应头展示 -->
+                    <div class="tab-pane " id="rule">
+
+                        <table class="table table-condensed">
+                            <tbody>
+                            {% for k, v in res_headers %}
+                                <tr class="">
+                                    <td style="font-weight: bold">{{ k }}</td>
+                                    <td>{{ v }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+
+                    </div>
+
+                    <!-- 响应体展示 -->
+                    <div class="tab-pane " id="forum">
+
+                        <!--<table class="table table-striped">-->
+                            <!--<tbody>-->
+                        <pre>{{ res_content }}</pre>
+                            <!--</tbody>-->
+                        <!--</table>-->
+
+                    </div>
+
+                </div>
+
+            </div>
+
+    </div>
+
+</body>
+</html>
